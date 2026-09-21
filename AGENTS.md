@@ -1,9 +1,36 @@
-<!-- BEGIN:nextjs-agent-rules -->
+# Function Junction — working notes
 
-# This is NOT the Next.js you know
+Next.js 16 (App Router, React 19, Tailwind v4) on Supabase. See `README.md`
+for setup; this file covers the conventions worth knowing before editing.
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+## Conventions
 
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+- **Never price anything on the client.** `src/lib/pricing.ts` is the single
+  source of truth. The booking wizard calls it for a preview; the server
+  action calls it again with rows read from the database. Adding a priced
+  field means changing it in one place.
+- **Public reads degrade.** Everything in `src/lib/queries.ts` falls back to
+  `src/lib/demo-data.ts` when Supabase is absent or a query returns nothing,
+  so a public page never shows a visitor an error. Keep `demo-data.ts` in step
+  with `supabase/seed.sql`.
+- **Admin reads do not degrade.** `src/lib/admin.ts` always goes through
+  `requireAdmin()` and returns real rows, including inactive ones.
+- **`payments` is server-write only.** The table has no client INSERT policy;
+  anything that writes it uses `createAdminClient()` after checking the caller.
+- Client components must not import from `src/lib/bookings.ts` or
+  `src/lib/supabase/server.ts` — both pull in `next/headers`. Shared shapes and
+  helpers live in `src/lib/booking-types.ts`.
+- Route guards live in `src/proxy.ts` (Next 16 renamed `middleware`), with
+  `requireAdmin()` as the second gate inside the admin tree.
 
-<!-- END:nextjs-agent-rules -->
+## Schema changes
+
+Add a numbered file under `supabase/migrations/`, mirror the shape in
+`src/lib/database.types.ts`, and update `supabase/seed.sql` plus
+`src/lib/demo-data.ts` if the change affects seeded content.
+
+## Before committing
+
+```bash
+npm run lint && npm run build
+```
