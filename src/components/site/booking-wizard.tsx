@@ -18,10 +18,13 @@ const STEPS = ["Occasion", "Details", "Add-ons", "Confirm"] as const;
 export function BookingWizard({
   packages,
   services,
+  packageServices,
   defaults,
 }: {
   packages: Package[];
   services: ServiceWithCategory[];
+  /** package slug -> ids of the services that package already bundles */
+  packageServices: Record<string, string[]>;
   defaults: {
     packageSlug?: string;
     serviceId?: string;
@@ -49,8 +52,8 @@ export function BookingWizard({
   // Services already bundled into the chosen package are hidden from the
   // add-on list so nobody pays for the same DJ twice.
   const bundledIds = useMemo(
-    () => new Set((pkg?.id ? (bundledFor(pkg, services) ?? []) : []).map((s) => s.id)),
-    [pkg, services],
+    () => new Set(packageSlug ? (packageServices[packageSlug] ?? []) : []),
+    [packageSlug, packageServices],
   );
 
   const addonCandidates = services.filter((s) => !bundledIds.has(s.id));
@@ -73,7 +76,7 @@ export function BookingWizard({
       setGuestCount(next.guest_capacity);
     }
     // Drop any add-on that the new package already bundles.
-    const bundled = next ? new Set((bundledFor(next, services) ?? []).map((s) => s.id)) : new Set();
+    const bundled = new Set(packageServices[slug] ?? []);
     setSelected((prev) => prev.filter((id) => !bundled.has(id)));
   };
 
@@ -171,14 +174,6 @@ export function BookingWizard({
 }
 
 /* -------------------------------------------------------------------------- */
-
-function bundledFor(pkg: Package, services: ServiceWithCategory[]) {
-  // The listing query does not join package_services, so the wizard matches on
-  // the inclusion copy instead — close enough to avoid obvious duplicates.
-  return services.filter((s) =>
-    pkg.inclusions.some((inc) => inc.toLowerCase().includes(s.name.toLowerCase().split(" ")[0])),
-  );
-}
 
 function Stepper({ step, onStep }: { step: number; onStep: (n: number) => void }) {
   return (

@@ -175,3 +175,36 @@ export async function getCurrentProfile(): Promise<Profile | null> {
   const { data } = await supabase.from("profiles").select("*").eq("id", user.id).maybeSingle();
   return (data as Profile | null) ?? null;
 }
+
+/**
+ * package slug -> ids of the services it already bundles.
+ *
+ * The booking wizard uses this to hide add-ons a chosen package already
+ * covers, so nobody is offered the same DJ twice.
+ */
+export async function getPackageServiceMap(): Promise<Record<string, string[]>> {
+  const supabase = await createClient();
+
+  if (!supabase) {
+    // Demo ids are derived from the slug, so the mapping is mechanical.
+    return Object.fromEntries(
+      Object.entries(demoPackageServiceMap).map(([slug, serviceSlugs]) => [
+        slug,
+        serviceSlugs.map((s) => `svc-${s}`),
+      ]),
+    );
+  }
+
+  const { data } = await supabase
+    .from("packages")
+    .select("slug, package_services(service_id)");
+
+  const rows = (data ?? []) as unknown as {
+    slug: string;
+    package_services: { service_id: string }[] | null;
+  }[];
+
+  return Object.fromEntries(
+    rows.map((row) => [row.slug, (row.package_services ?? []).map((ps) => ps.service_id)]),
+  );
+}

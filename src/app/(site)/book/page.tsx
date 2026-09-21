@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { getCurrentProfile, getPackages, getServices } from "@/lib/queries";
+import {
+  getCurrentProfile,
+  getPackageServiceMap,
+  getPackages,
+  getServices,
+} from "@/lib/queries";
 import { PageHeader } from "@/components/site/page-header";
 import { BookingWizard } from "@/components/site/booking-wizard";
 
@@ -16,7 +21,11 @@ export default async function BookPage({ searchParams }: PageProps<"/book">) {
   // where Supabase is not configured at all.
   if (!profile) redirect("/login?next=/book");
 
-  const [packages, services] = await Promise.all([getPackages(), getServices()]);
+  const [packages, services, packageServices] = await Promise.all([
+    getPackages(),
+    getServices(),
+    getPackageServiceMap(),
+  ]);
 
   const packageSlug = typeof params.package === "string" ? params.package : undefined;
   const serviceSlug = typeof params.service === "string" ? params.service : undefined;
@@ -35,6 +44,7 @@ export default async function BookPage({ searchParams }: PageProps<"/book">) {
         <BookingWizard
           packages={packages}
           services={services}
+          packageServices={packageServices}
           defaults={{
             packageSlug: packages.some((p) => p.slug === packageSlug) ? packageSlug : undefined,
             serviceId: service?.id,
