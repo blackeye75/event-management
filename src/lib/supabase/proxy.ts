@@ -31,6 +31,7 @@ export async function updateSession(request: NextRequest) {
   const isPrivate =
     pathname.startsWith("/admin") ||
     pathname.startsWith("/account") ||
+    pathname.startsWith("/book") ||
     pathname.startsWith("/checkout");
 
   if (isPrivate && !user) {

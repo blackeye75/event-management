@@ -24,8 +24,15 @@ export function NavbarClient({
 
   useMotionValueEvent(scrollY, "change", (y) => setScrolled(y > 24));
 
-  // Close the drawer on navigation and lock the body while it is open.
-  useEffect(() => setOpen(false), [pathname]);
+  // Close the drawer whenever the route changes. Adjusting state during
+  // render is React's recommended alternative to a synchronising effect.
+  const [lastPath, setLastPath] = useState(pathname);
+  if (lastPath !== pathname) {
+    setLastPath(pathname);
+    setOpen(false);
+  }
+
+  // Lock the page behind the open drawer.
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => {

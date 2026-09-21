@@ -4,7 +4,7 @@ import { updateSession } from "@/lib/supabase/proxy";
 /**
  * Next 16's `proxy` convention (formerly `middleware`). Runs on every
  * navigation to refresh the Supabase session cookie and guard /admin,
- * /account and /checkout.
+ * /account, /book and /checkout.
  */
 export default async function proxy(request: NextRequest) {
   return updateSession(request);

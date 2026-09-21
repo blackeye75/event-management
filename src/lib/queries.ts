@@ -57,13 +57,11 @@ export async function getServices(options: { categorySlug?: string } = {}): Prom
       .filter((s) => !options.categorySlug || s.category?.slug === options.categorySlug);
   }
 
-  let query = supabase
+  const { data } = await supabase
     .from("services")
     .select("*, category:categories(*)")
     .eq("is_active", true)
     .order("sort_order");
-
-  const { data } = await query;
   const rows = (data ?? []) as unknown as ServiceWithCategory[];
 
   if (!rows.length) {
