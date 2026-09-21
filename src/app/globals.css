@@ -1,0 +1,180 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Function Junction — design tokens
+   A classical palette (ink, champagne, blush) driven by a modern type scale.
+   ========================================================================== */
+
+@theme {
+  --color-ink-950: #07060b;
+  --color-ink-900: #0d0b14;
+  --color-ink-800: #15121f;
+  --color-ink-700: #1f1a2e;
+  --color-ink-600: #2c2440;
+
+  --color-champagne-50: #fdf9f0;
+  --color-champagne-100: #f8eed8;
+  --color-champagne-200: #f0dcb3;
+  --color-champagne-300: #e8c88a;
+  --color-champagne-400: #d9ad5e;
+  --color-champagne-500: #c9a24a;
+  --color-champagne-600: #a8823a;
+
+  --color-blush-100: #fbeeea;
+  --color-blush-200: #f3d9d2;
+  --color-blush-300: #e6b8ab;
+
+  --color-cream-50: #fcfaf7;
+  --color-cream-100: #f7f2ea;
+  --color-cream-200: #ece4d7;
+
+  --font-display: var(--font-cormorant), "Times New Roman", serif;
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-shimmer: shimmer 2.4s linear infinite;
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-pulse-ring: pulse-ring 3s ease-out infinite;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-18px) rotate(2deg); }
+}
+
+@keyframes pulse-ring {
+  0%   { transform: scale(0.9); opacity: 0.7; }
+  70%  { transform: scale(1.35); opacity: 0; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+
+/* --------------------------------------------------------------------------
+   Base
+   -------------------------------------------------------------------------- */
+:root {
+  --page: var(--color-ink-950);
+  color-scheme: dark;
+}
+
+* {
+  border-color: color-mix(in oklab, var(--color-champagne-300) 14%, transparent);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--page);
+  color: var(--color-cream-100);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-champagne-300);
+  color: var(--color-ink-950);
+}
+
+/* A restrained, dark scrollbar so the chrome does not fight the page. */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--color-ink-900); }
+::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--color-champagne-500) 45%, var(--color-ink-700));
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--color-champagne-500); }
+
+/* --------------------------------------------------------------------------
+   Utilities
+   -------------------------------------------------------------------------- */
+@utility font-display {
+  font-family: var(--font-display);
+  font-weight: 300;
+  letter-spacing: -0.015em;
+}
+
+/* Gold foil text, used for the accent words inside display headings. */
+@utility text-foil {
+  background-image: linear-gradient(
+    100deg,
+    var(--color-champagne-600) 0%,
+    var(--color-champagne-200) 22%,
+    #fffaf0 38%,
+    var(--color-champagne-300) 55%,
+    var(--color-champagne-600) 78%,
+    var(--color-champagne-200) 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: var(--animate-shimmer);
+}
+
+@utility glass {
+  background: color-mix(in oklab, var(--color-ink-800) 72%, transparent);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid color-mix(in oklab, var(--color-champagne-300) 16%, transparent);
+}
+
+@utility hairline {
+  border: 1px solid color-mix(in oklab, var(--color-champagne-300) 18%, transparent);
+}
+
+/* The section-heading eyebrow: small caps, wide tracking, a gold rule. */
+@utility eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--color-champagne-300);
+}
+
+@utility ornament {
+  background-image: radial-gradient(
+    circle at center,
+    color-mix(in oklab, var(--color-champagne-400) 28%, transparent) 0%,
+    transparent 68%
+  );
+}
+
+/* Reveal-on-scroll base state; JS adds `data-shown` via IntersectionObserver
+   for the handful of places that do not use motion/react. */
+@utility reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &[data-shown="true"] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
