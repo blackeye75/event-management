@@ -72,6 +72,12 @@
 
 html {
   scroll-behavior: smooth;
+  /* Styling ::-webkit-scrollbar below opts Chrome out of overlay scrollbars, so
+     the bar occupies 10px of layout width. Reserving that gutter permanently
+     keeps the viewport a constant width whether the bar is showing, absent, or
+     suppressed by the body scroll-lock behind an open drawer — without it the
+     fixed, right-aligned header jumps sideways every time the lock toggles. */
+  scrollbar-gutter: stable;
 }
 
 body {

@@ -47,7 +47,7 @@ export function NavbarClient({
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         className={cn(
-          "fixed inset-x-0 top-0 z-50 transition-all duration-500",
+          "fixed inset-x-0 top-0 z-50 transition-colors duration-500",
           scrolled
             ? "border-b border-champagne-300/10 bg-ink-950/80 backdrop-blur-xl"
             : "border-b border-transparent",

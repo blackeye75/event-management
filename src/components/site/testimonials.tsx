@@ -36,7 +36,7 @@ export function Testimonials({ items }: { items: Testimonial[] }) {
         strokeWidth={1.2}
       />
 
-      <div className="relative mt-6 min-h-72 sm:min-h-64">
+      <div className="relative mt-6 min-h-72 overflow-hidden sm:min-h-64">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.blockquote
             key={item.id}
