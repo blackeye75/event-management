@@ -101,8 +101,8 @@ export default async function PackageDetailPage({ params }: PageProps<"/packages
 
       {/* ------------------------------------------------------------- Content */}
       <section className="mx-auto max-w-7xl px-5 py-20 sm:px-8">
-        <div className="grid gap-14 lg:grid-cols-[1.6fr_1fr] lg:gap-20">
-          <div>
+        <div className="grid gap-14 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:gap-20">
+          <div className="min-w-0">
             <Reveal>
               <p className="text-pretty text-lg leading-relaxed text-cream-200/70">
                 {pkg.description}
@@ -110,7 +110,7 @@ export default async function PackageDetailPage({ params }: PageProps<"/packages
             </Reveal>
 
             <Reveal delay={0.06}>
-              <div className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-champagne-300/12 sm:grid-cols-3">
+              <div className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-champagne-300/12 [&>*:last-child]:col-span-2 sm:grid-cols-3 sm:[&>*:last-child]:col-span-1">
                 <Facet icon={Users} label="Guest capacity" value={`Up to ${pkg.guest_capacity}`} />
                 <Facet
                   icon={Clock}
@@ -151,7 +151,7 @@ export default async function PackageDetailPage({ params }: PageProps<"/packages
                     <Link
                       key={service.id}
                       href={`/services/${service.slug}`}
-                      className="hairline group flex items-center gap-4 rounded-2xl bg-ink-900/40 p-3 transition-all duration-400 hover:border-champagne-300/40 hover:bg-ink-800/60"
+                      className="hairline group flex min-w-0 items-center gap-4 rounded-2xl bg-ink-900/40 p-3 transition-all duration-400 hover:border-champagne-300/40 hover:bg-ink-800/60"
                     >
                       <SmartImage
                         src={service.image_url}
@@ -186,7 +186,7 @@ export default async function PackageDetailPage({ params }: PageProps<"/packages
           </div>
 
           {/* ------------------------------------------------------ Price card */}
-          <aside className="lg:sticky lg:top-28 lg:self-start">
+          <aside className="min-w-0 lg:sticky lg:top-28 lg:self-start">
             <Reveal delay={0.1}>
               <div className="glass rounded-3xl p-7">
                 <span className="text-[0.65rem] uppercase tracking-[0.22em] text-cream-200/40">
@@ -280,7 +280,7 @@ function Facet({
   value: string;
 }) {
   return (
-    <div className="bg-ink-900/50 px-5 py-6">
+    <div className="min-w-0 bg-ink-900/50 px-4 py-6 sm:px-5">
       <Icon className="size-4 text-champagne-400" />
       <div className="mt-3 text-[0.62rem] uppercase tracking-[0.2em] text-cream-200/35">
         {label}

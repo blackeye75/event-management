@@ -7,7 +7,7 @@ import { SmartImage } from "@/components/ui/smart-image";
 export default function AuthLayout({ children }: LayoutProps<"/">) {
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
-      <div className="relative flex flex-col justify-center px-5 py-12 sm:px-12 lg:px-16">
+      <div className="relative flex flex-col justify-center overflow-hidden px-5 py-12 sm:px-12 lg:px-16">
         <div
           aria-hidden
           className="ornament pointer-events-none absolute -left-40 top-0 size-[34rem] opacity-50"

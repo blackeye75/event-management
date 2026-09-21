@@ -13,7 +13,7 @@ export default function NotFound() {
     <>
       <Navbar />
       <main className="flex-1">
-        <section className="relative flex min-h-[70svh] flex-col items-center justify-center px-5 py-32 text-center">
+        <section className="relative flex min-h-[70svh] flex-col items-center justify-center overflow-hidden px-5 py-32 text-center">
           <div
             aria-hidden
             className="ornament pointer-events-none absolute left-1/2 top-1/3 size-[36rem] -translate-x-1/2 opacity-50"
